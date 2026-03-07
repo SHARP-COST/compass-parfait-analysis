@@ -1,0 +1,58 @@
+name: site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.8.8
+
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.12"
+
+      - name: Install environment
+        run: pixi install
+
+      - name: Bootstrap
+        run: pixi run bootstrap
+
+      - name: Setup Julia (project task)
+        run: pixi run setup-julia
+
+      - name: Instantiate Julia project
+        run: pixi run instantiate
+
+      - name: Restore cached HEPData
+        id: hepdata-cache
+        uses: actions/cache@v4
+        with:
+          path: data
+          key: ${{ runner.os }}-hepdata-${{ hashFiles('scripts/fetch_data.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-hepdata-
+
+      - name: Fetch HEPData (cache miss only)
+        if: steps.hepdata-cache.outputs.cache-hit != 'true'
+        run: pixi run fetch-data
+
+      - name: Run model
+        run: pixi run run-model
+
+      - name: Render Quarto site
+        run: pixi run render-site
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quarto-site
+          path: docs/site
