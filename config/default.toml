@@ -1,0 +1,5 @@
+[analysis]
+name = "COMPASS Parfait"
+
+[binning]
+axes = ["m3pi", "tprime"]
