@@ -21,6 +21,7 @@ The project includes a GitHub Actions workflow at:
 It runs Pixi tasks so local and CI commands stay aligned.
 
 `data/` is cached in GitHub Actions. CI restores cached HEPData first and only runs `pixi run fetch-data` on cache misses.
+If cached files are missing or incomplete, CI triggers an explicit fallback fetch and validates the required files.
 
 ## Typical CI Steps
 
