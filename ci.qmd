@@ -31,5 +31,6 @@ pixi run bootstrap
 pixi run instantiate
 pixi run fetch-data
 pixi run run-model
+pixi run build-dashboard-data
 pixi run render-site
 ```

@@ -1,8 +1,7 @@
 using Pkg
 Pkg.activate(joinpath(@__DIR__, ".."))
 
-include(joinpath(@__DIR__, "..", "src", "CompassParfait.jl"))
-using .CompassParfait
+using CompassParfait
 
 cfg = CompassParfait.load_config(joinpath(@__DIR__, "..", "config", "default.toml"))
 data = CompassParfait.load_data(cfg)

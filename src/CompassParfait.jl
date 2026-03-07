@@ -1,8 +1,12 @@
 module CompassParfait
 
 using TOML
+using JSON3
 
 export load_config, load_data, fit_model, save_outputs
+export TransitionDataset, UncertaintyDataset, load_transition_dataset, load_covariance_uncertainties, write_dashboard_artifacts
+
+include("dashboard_data.jl")
 
 function load_config(path::AbstractString)
     if isfile(path)

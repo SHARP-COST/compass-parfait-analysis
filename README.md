@@ -21,6 +21,7 @@ The core goal is educational and reproducible:
 - `workflow.qmd`: reproducible execution path
 - `data-layout.qmd`: binning by `m(3π)` and `t'`
 - `model.qmd`: model entrypoint and API sketch
+- `dashboard.qmd`: interactive client-side dashboard for wave/bin exploration
 - `ci.qmd`: CI-based reproducibility
 - `references.qmd`: source links and pending scientific references
 
@@ -39,7 +40,9 @@ pixi run bootstrap
 pixi run setup-julia
 pixi run instantiate
 pixi run fetch-data
+pixi run test
 pixi run run-model
+pixi run build-dashboard-data
 pixi run render-site
 ```
 

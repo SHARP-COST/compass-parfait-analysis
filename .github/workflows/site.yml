@@ -64,8 +64,14 @@ jobs:
           test -s data/decay_phase_space_volume.json
           test -s data/covariance_matrices.tar.gz
 
+      - name: Run tests
+        run: pixi run test
+
       - name: Run model
         run: pixi run run-model
+
+      - name: Build dashboard data artifacts
+        run: pixi run build-dashboard-data
 
       - name: Render Quarto site
         run: pixi run render-site

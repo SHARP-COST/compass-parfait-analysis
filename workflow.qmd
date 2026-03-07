@@ -9,8 +9,9 @@ title: "Workflow"
 3. Resolve package dependencies.
 4. Pull data from the hub.
 5. Run one framework/model entrypoint.
-6. Produce outputs and diagnostic comparisons.
-7. Reproduce everything in CI.
+6. Build dashboard artifacts from the transition-amplitude table.
+7. Produce outputs and diagnostic comparisons.
+8. Reproduce everything in CI.
 
 ## Commands (Pixi-first)
 
@@ -21,6 +22,7 @@ pixi run setup-julia
 pixi run instantiate
 pixi run fetch-data
 pixi run run-model
+pixi run build-dashboard-data
 pixi run render-site
 ```
 
@@ -29,3 +31,4 @@ pixi run render-site
 - Keep user-facing commands under `pixi run ...`.
 - CI should execute the same task graph as local runs.
 - `fetch-data` currently pulls from HEPData record `ins1655631` (transition amplitudes, phase-space volumes, covariance matrices).
+- `build-dashboard-data` produces static JSON artifacts consumed by client-side dashboard interactivity.

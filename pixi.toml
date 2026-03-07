@@ -11,6 +11,8 @@ setup-julia = "bash scripts/setup_julia.sh"
 instantiate = "bash scripts/instantiate.sh"
 fetch-data = "bash scripts/fetch_data.sh"
 run-model = "julia --project=. scripts/run_model.jl"
+build-dashboard-data = "julia --project=. scripts/build_dashboard_data.jl"
+test = "julia --project=. test/runtests.jl"
 render-site = "quarto render"
 
 [dependencies]
