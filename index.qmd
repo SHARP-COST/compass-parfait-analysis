@@ -1,0 +1,37 @@
+---
+title: "Overview"
+---
+
+## Goal
+
+This site documents the **COMPASS Parfait Analysis** workflow as a reproducible, public-facing process.
+
+The key objectives are:
+
+- explain the analysis pipeline from environment setup to model execution,
+- describe how datasets are organized and binned,
+- show how model calls are made in practice,
+- make reproduction CI-driven and transparent.
+
+## Analysis Dimensions
+
+The data are organized over two main binning variables:
+
+- `m(3\pi)`: the three-pion invariant mass,
+- `t'`: the reduced momentum transfer in the scattering process.
+
+Each independent dataset is mapped into bins over these dimensions.
+
+## Paper Context
+
+This workflow is grounded in the COMPASS resonance-production analysis:
+
+- COMPASS Collaboration, *Phys. Rev. D* **95** (2017) 032004
+- arXiv: `1509.00992`
+- DOI: `10.1103/PhysRevD.95.032004`
+
+The publication explicitly uses a two-dimensional partial-wave-analysis setup in `m(3π)` and `t'`, matching this site's data layout.
+
+## Event Focus
+
+This material is prepared for the SharP COST presentation event to communicate the scientific workflow and model infrastructure in a reproducible way.

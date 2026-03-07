@@ -1,0 +1,52 @@
+---
+title: "Data Layout"
+---
+
+## Binning Axes
+
+The binning is defined over:
+
+- `m(3\pi)` bins,
+- `t'` bins.
+
+A single analysis item is identified by a pair:
+
+`(m(3\pi) bin, t' bin)`.
+
+## Paper-Derived Baseline
+
+From the COMPASS reference publication:
+
+- `m(3π)` range: `0.5 < m(3π) < 2.5 GeV/c^2` in `100` bins,
+- `t'` range: `0.1 < t' < 1.0 (GeV/c)^2` in `11` bins.
+
+These numbers are the default context for this presentation and can be adjusted if your Parfait analysis uses a modified binning scheme.
+
+The HEPData release for the resonance-model fit provides data exactly on this `(m(3π), t')` grid, including:
+
+- normalized transition amplitudes for 14 selected waves across all `1100` cells,
+- covariance matrices (per cell),
+- decay phase-space volumes `I_aa` versus `m(3π)`.
+
+## Conceptual Structure
+
+```text
+Dataset
+└── m(3π) bin i
+    ├── t' bin 1
+    ├── t' bin 2
+    └── ...
+└── m(3π) bin i+1
+    ├── t' bin 1
+    └── ...
+```
+
+## What This Enables
+
+- compare behavior across `t'` at fixed `m(3\pi)`,
+- compare behavior across `m(3\pi)` at fixed `t'`,
+- study normalization strategy per bin and globally.
+
+## Integrals
+
+Integral definitions used in data-model comparison will be linked in this page once provided from external sources.

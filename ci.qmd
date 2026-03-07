@@ -1,0 +1,34 @@
+---
+title: "CI & Reproducibility"
+---
+
+## CI Role
+
+CI is the reference mechanism for reproducibility:
+
+- environment resolution,
+- dependency installation,
+- HEPData download with caching,
+- deterministic execution,
+- website rendering checks.
+
+## CI Workflow
+
+The project includes a GitHub Actions workflow at:
+
+- `.github/workflows/site.yml`
+
+It runs Pixi tasks so local and CI commands stay aligned.
+
+`data/` is cached in GitHub Actions. CI restores cached HEPData first and only runs `pixi run fetch-data` on cache misses.
+
+## Typical CI Steps
+
+```bash
+pixi install
+pixi run bootstrap
+pixi run instantiate
+pixi run fetch-data
+pixi run run-model
+pixi run render-site
+```

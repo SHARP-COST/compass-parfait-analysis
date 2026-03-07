@@ -1,0 +1,15 @@
+# Environment and caches
+.pixi/
+.quarto/
+
+# Generated outputs
+docs/site/
+artifacts/
+data/
+
+# Julia
+*.jl.cov
+*.jl.*.cov
+
+# OS/editor
+.DS_Store

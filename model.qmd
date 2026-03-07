@@ -1,0 +1,37 @@
+---
+title: "Model"
+---
+
+## Model Entry
+
+The Julia module entrypoint is exposed via a Pixi task:
+
+```bash
+pixi run run-model
+```
+
+Equivalent direct Julia call:
+
+```bash
+julia --project=. scripts/run_model.jl
+```
+
+## Minimal API Sketch
+
+```julia
+using CompassParfait
+
+cfg = CompassParfait.load_config("config/default.toml")
+data = CompassParfait.load_data(cfg)
+fit  = CompassParfait.fit_model(data, cfg)
+CompassParfait.save_outputs(fit, "artifacts/")
+```
+
+## Documentation Targets
+
+This page is intended to host:
+
+- model equations and assumptions,
+- coupling/parameter organization,
+- bin-connection strategy,
+- normalization definition and computation.

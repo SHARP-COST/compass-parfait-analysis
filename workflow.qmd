@@ -1,0 +1,31 @@
+---
+title: "Workflow"
+---
+
+## End-to-End Flow
+
+1. Prepare environment with Pixi.
+2. Install and pin Julia (`1.12` target).
+3. Resolve package dependencies.
+4. Pull data from the hub.
+5. Run one framework/model entrypoint.
+6. Produce outputs and diagnostic comparisons.
+7. Reproduce everything in CI.
+
+## Commands (Pixi-first)
+
+```bash
+pixi install
+pixi run bootstrap
+pixi run setup-julia
+pixi run instantiate
+pixi run fetch-data
+pixi run run-model
+pixi run render-site
+```
+
+## Notes
+
+- Keep user-facing commands under `pixi run ...`.
+- CI should execute the same task graph as local runs.
+- `fetch-data` currently pulls from HEPData record `ins1655631` (transition amplitudes, phase-space volumes, covariance matrices).

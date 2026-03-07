@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: docs/site
+
+website:
+  title: "COMPASS Parfait Analysis"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: workflow.qmd
+        text: Workflow
+      - href: data-layout.qmd
+        text: Data Layout
+      - href: model.qmd
+        text: Model
+      - href: ci.qmd
+        text: CI
+      - href: references.qmd
+        text: References
+  page-footer:
+    left: "SharP COST • COMPASS Parfait Analysis"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+
+execute:
+  freeze: auto

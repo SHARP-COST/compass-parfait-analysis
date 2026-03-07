@@ -1,0 +1,59 @@
+---
+title: "References"
+---
+
+## Source Map
+
+This page tracks canonical links and references used by the workflow.
+
+## Repositories
+
+- Primary workflow repository (proposed): `https://github.com/SHARP-COST/compass-parfait-analysis`
+- Organization: [SHARP-COST](https://github.com/SHARP-COST)
+
+## Main Physics Paper
+
+- INSPIRE record: [inspirehep.net/literature/1391643](https://inspirehep.net/literature/1391643)
+- INSPIRE JSON API: [record 1391643 JSON](https://inspirehep.net/api/literature/1391643?format=json)
+- DOI: [10.1103/PhysRevD.95.032004](https://doi.org/10.1103/PhysRevD.95.032004)
+- arXiv: [1509.00992](https://arxiv.org/abs/1509.00992)
+- Full text (INSPIRE file link): [PDF](https://inspirehep.net/files/a0aa10e3857325e78d8e17293816192a)
+
+## HEPData Record
+
+- Record page: [ins1655631](https://www.hepdata.net/record/ins1655631)
+- HEPData DOI: [10.17182/hepdata.82958.v1](https://doi.org/10.17182/hepdata.82958.v1)
+- Linked paper (INSPIRE 1655631): [inspirehep.net/literature/1655631](https://inspirehep.net/literature/1655631)
+- Paper DOI: [10.1103/PhysRevD.98.092003](https://doi.org/10.1103/PhysRevD.98.092003)
+- arXiv: [1802.05913](https://arxiv.org/abs/1802.05913)
+
+### Data Tables
+
+- Transition Amplitudes (table DOI): [10.17182/hepdata.82958.v1/t1](https://doi.org/10.17182/hepdata.82958.v1/t1)
+- Transition Amplitudes JSON: [download](https://www.hepdata.net/download/table/ins1655631/Transition%20Amplitudes/json)
+- Decay Phase-Space Volume (table DOI): [10.17182/hepdata.82958.v1/t2](https://doi.org/10.17182/hepdata.82958.v1/t2)
+- Decay Phase-Space Volume JSON: [download](https://www.hepdata.net/download/table/ins1655631/Decay%20Phase-Space%20Volume%20of%20Partial%20Waves/json)
+- Covariance matrices (additional resource): [tar.gz](https://www.hepdata.net/record/resource/731180?view=true)
+
+## Tooling
+
+- Pixi: [prefix-dev/pixi](https://github.com/prefix-dev/pixi)
+- Quarto: [quarto-dev/quarto-cli](https://github.com/quarto-dev/quarto-cli)
+- Julia setup action: [julia-actions/setup-julia](https://github.com/julia-actions/setup-julia)
+
+## Project Pages
+
+- [Overview](index.qmd)
+- [Workflow](workflow.qmd)
+- [Data Layout](data-layout.qmd)
+- [Model](model.qmd)
+- [CI](ci.qmd)
+
+## Pending Scientific References
+
+To be filled with your external inputs:
+
+- integral definitions used in data-model comparison,
+- framework/package references beyond the core COMPASS paper,
+- data-hub endpoints and dataset metadata references (initial HEPData links added above),
+- normalization formula references and derivation notes.
