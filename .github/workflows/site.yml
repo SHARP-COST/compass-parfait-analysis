@@ -56,13 +56,11 @@ jobs:
 
       - name: Validate cached/downloaded data (fallback fetch)
         run: |
-          if [ ! -s data/transition_amplitudes.json ] || [ ! -s data/decay_phase_space_volume.json ] || [ ! -s data/covariance_matrices.tar.gz ]; then
-            echo "Cached data incomplete or missing. Running fetch-data fallback."
+          if ! bash scripts/fetch_data.sh --validate-only; then
+            echo "Cached data is missing or invalid. Running fetch-data fallback."
             pixi run fetch-data
           fi
-          test -s data/transition_amplitudes.json
-          test -s data/decay_phase_space_volume.json
-          test -s data/covariance_matrices.tar.gz
+          bash scripts/fetch_data.sh --validate-only
 
       - name: Run tests
         run: pixi run test
