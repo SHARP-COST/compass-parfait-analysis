@@ -114,8 +114,9 @@ body {
 }
 
 .cell-btn {
-  width: 10px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
   border: 1px solid #c4d7dd;
   border-radius: 2px;
   cursor: pointer;
@@ -137,7 +138,7 @@ body {
   display: flex;
   justify-content: space-between;
   margin: 4px 0 0 136px;
-  width: 1198px;
+  width: 1398px;
   color: #405866;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
@@ -272,7 +273,7 @@ function matrixInput(cells, selected = {m_index: 1, t_index: 1}) {
     const tb = manifest.tprime_bins[ti - 1]
     const row = html`<div class="matrix-row"></div>`
     const label = html`<div class="matrix-row-label">${tb.low.toFixed(3)}–${tb.high.toFixed(3)}</div>`
-    const grid = html`<div class="cell-grid" style="grid-template-columns:repeat(${manifest.n_m}, 10px)"></div>`
+    const grid = html`<div class="cell-grid" style="grid-template-columns:repeat(${manifest.n_m}, 12px)"></div>`
 
     for (const c of cells.filter(d => d.t_index === ti).sort((a, b) => a.m_index - b.m_index)) {
       const btn = html`<button class="cell-btn" aria-label="m ${c.m_index}, t ${c.t_index}"></button>`
