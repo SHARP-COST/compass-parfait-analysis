@@ -52,7 +52,7 @@ Rendered site output: `docs/site/`
 
 Workflow file: `.github/workflows/site.yml`
 
-CI uses the same Pixi task interface used locally, restores cached HEPData files, and falls back to `pixi run fetch-data` when cache content is incomplete.
+CI uses the same Pixi task interface used locally and validates the versioned HEPData input snapshot before running tests. Use `pixi run fetch-data` to refresh that snapshot intentionally from the canonical HEPData record.
 
 On pushes to `main`, CI deploys the rendered site to GitHub Pages.
 

@@ -5,7 +5,6 @@
 # Generated outputs
 docs/site/
 artifacts/
-data/
 
 # Julia
 *.jl.cov

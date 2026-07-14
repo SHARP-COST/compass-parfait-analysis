@@ -41,26 +41,8 @@ jobs:
       - name: Instantiate Julia project
         run: pixi run instantiate
 
-      - name: Restore cached HEPData
-        id: hepdata-cache
-        uses: actions/cache@v4
-        with:
-          path: data
-          key: ${{ runner.os }}-hepdata-${{ hashFiles('scripts/fetch_data.sh') }}
-          restore-keys: |
-            ${{ runner.os }}-hepdata-
-
-      - name: Fetch HEPData (cache miss only)
-        if: steps.hepdata-cache.outputs.cache-hit != 'true'
-        run: pixi run fetch-data
-
-      - name: Validate cached/downloaded data (fallback fetch)
-        run: |
-          if ! bash scripts/fetch_data.sh --validate-only; then
-            echo "Cached data is missing or invalid. Running fetch-data fallback."
-            pixi run fetch-data
-          fi
-          bash scripts/fetch_data.sh --validate-only
+      - name: Validate versioned HEPData inputs
+        run: bash scripts/fetch_data.sh --validate-only
 
       - name: Run tests
         run: pixi run test
