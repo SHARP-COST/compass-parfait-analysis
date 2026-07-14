@@ -8,14 +8,14 @@ website:
     left:
       - href: index.qmd
         text: Overview
-      - href: workflow.qmd
-        text: Workflow
+      - href: dashboard.qmd
+        text: Dashboard
       - href: data-layout.qmd
         text: Data Layout
       - href: model.qmd
         text: Model
-      - href: dashboard.qmd
-        text: Dashboard
+      - href: workflow.qmd
+        text: Workflow
       - href: ci.qmd
         text: CI
       - href: references.qmd

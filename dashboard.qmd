@@ -4,6 +4,7 @@ format:
   html:
     theme: cosmo
     toc: false
+    code-copy: false
 page-layout: full
 execute:
   echo: false
@@ -16,6 +17,7 @@ execute:
   --panel: #ffffff;
   --border: #d7e6ea;
   --ink: #113146;
+  --muted: #547080;
   --accent: #0b7a75;
 }
 
@@ -23,24 +25,56 @@ body {
   background: var(--bg);
 }
 
-.dash-grid {
+.workspace-grid {
   display: grid;
-  gap: 14px;
-  grid-template-columns: 1.1fr 1fr;
+  gap: 18px;
+  grid-template-columns: minmax(250px, 0.7fr) minmax(0, 2.3fr);
   align-items: start;
 }
 
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(22, 65, 82, 0.06);
 }
 
 .panel h3 {
   margin: 0 0 10px 0;
-  font-size: 16px;
+  font-size: 17px;
   color: var(--ink);
+}
+
+.panel-kicker {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.panel-note,
+.section-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.control-stack form {
+  display: block !important;
+  margin-bottom: 12px;
+}
+
+.control-stack form label,
+.control-stack form select {
+  display: block;
+  width: 100%;
+}
+
+.control-stack form select {
+  margin-top: 7px;
 }
 
 .meta-badge {
@@ -54,27 +88,36 @@ body {
 }
 
 .matrix-wrap {
-  border: 1px solid #d3e3e8;
-  border-radius: 10px;
-  padding: 10px;
-  background: #fcffff;
-  max-height: 620px;
-  overflow: auto;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+}
+
+.matrix-row {
+  display: grid;
+  grid-template-columns: 128px max-content;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.matrix-row-label {
+  color: #405866;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .cell-grid {
   display: grid;
-  grid-template-columns: repeat(33, 16px);
-  grid-auto-rows: 16px;
-  gap: 3px;
-  justify-content: center;
+  gap: 2px;
 }
 
 .cell-btn {
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 18px;
   border: 1px solid #c4d7dd;
-  border-radius: 3px;
+  border-radius: 2px;
   cursor: pointer;
   padding: 0;
 }
@@ -87,30 +130,43 @@ body {
 .matrix-caption {
   font-size: 12px;
   color: #405866;
-  margin-top: 8px;
+  margin: 10px 0 0 136px;
 }
 
-.t-legend {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(180px, 1fr));
-  gap: 6px 10px;
-  margin-top: 10px;
-}
-
-.t-legend-item {
+.mass-axis {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #2c495b;
+  justify-content: space-between;
+  margin: 4px 0 0 136px;
+  width: 1198px;
+  color: #405866;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 
-.t-legend-chip {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  border: 1px solid #89a3af;
-  flex: 0 0 auto;
+.plot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+  margin: 18px 0;
+}
+
+.plot-panel figure {
+  margin: 0;
+}
+
+.plot-panel svg {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.argand-square svg {
+  aspect-ratio: 1 / 1;
+}
+
+.ranking-panel {
+  margin-top: 18px;
 }
 
 .wave-table {
@@ -143,7 +199,8 @@ body {
 }
 
 @media (max-width: 1050px) {
-  .dash-grid {
+  .workspace-grid,
+  .plot-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -180,10 +237,15 @@ tColors = [
   "#6d597a", "#4cc9f0", "#4895ef", "#4361ee", "#3a0ca3"
 ]
 
-viewof selectedWave = Inputs.select(manifest.waves, {
-  label: "Wave (all 14 available)",
-  value: manifest.waves[0]
-})
+rankedWaves = manifest.waves
+  .map(wave => ({
+    wave,
+    intensity: amplitudes
+      .filter(d => d.wave === wave)
+      .reduce((sum, d) => sum + d.intensity, 0)
+  }))
+  .sort((a, b) => b.intensity - a.intensity)
+  .map((d, i) => ({...d, rank: i + 1}))
 
 function colorForCell(c, minv, maxv) {
   const base = tColors[c.t_index - 1] ?? "#90a4ae"
@@ -195,14 +257,6 @@ function colorForCell(c, minv, maxv) {
 
 function matrixInput(cells, selected = {m_index: 1, t_index: 1}) {
   const wrap = html`<div class="matrix-wrap"></div>`
-  const grid = html`<div class="cell-grid"></div>`
-  wrap.append(grid)
-
-  const sorted = [...cells].sort((a, b) => {
-    const aid = (a.m_index - 1) * 100 + a.t_index
-    const bid = (b.m_index - 1) * 100 + b.t_index
-    return aid - bid
-  })
 
   let current = selected
   Object.defineProperty(wrap, "value", {
@@ -210,57 +264,121 @@ function matrixInput(cells, selected = {m_index: 1, t_index: 1}) {
     set(v) { current = v }
   })
 
-  const vals = sorted.map(d => Math.log10(d.total_intensity + 1))
+  const vals = cells.map(d => Math.log10(d.total_intensity + 1))
   const minv = Math.min(...vals)
   const maxv = Math.max(...vals)
 
-  for (const c of sorted) {
-    const btn = html`<button class="cell-btn" aria-label="m ${c.m_index}, t ${c.t_index}"></button>`
-    btn.title = `m index ${c.m_index}, t index ${c.t_index}, total intensity ${c.total_intensity.toFixed(2)}`
-    btn.style.background = colorForCell(c, minv, maxv)
+  for (let ti = 1; ti <= manifest.n_t; ti++) {
+    const tb = manifest.tprime_bins[ti - 1]
+    const row = html`<div class="matrix-row"></div>`
+    const label = html`<div class="matrix-row-label">${tb.low.toFixed(3)}–${tb.high.toFixed(3)}</div>`
+    const grid = html`<div class="cell-grid" style="grid-template-columns:repeat(${manifest.n_m}, 10px)"></div>`
 
-    if (c.m_index === current.m_index && c.t_index === current.t_index) btn.classList.add("active")
+    for (const c of cells.filter(d => d.t_index === ti).sort((a, b) => a.m_index - b.m_index)) {
+      const btn = html`<button class="cell-btn" aria-label="m ${c.m_index}, t ${c.t_index}"></button>`
+      btn.title = `m(3π) ${c.m_center.toFixed(2)} GeV/c²; t' ${c.t_low.toFixed(3)}–${c.t_high.toFixed(3)} (GeV/c)²; total intensity ${c.total_intensity.toFixed(2)}`
+      btn.style.background = colorForCell(c, minv, maxv)
 
-    btn.onclick = () => {
-      current = {m_index: c.m_index, t_index: c.t_index}
-      for (const b of grid.querySelectorAll(".cell-btn")) b.classList.remove("active")
-      btn.classList.add("active")
-      wrap.dispatchEvent(new Event("input"))
+      if (c.m_index === current.m_index && c.t_index === current.t_index) btn.classList.add("active")
+
+      btn.onclick = () => {
+        current = {m_index: c.m_index, t_index: c.t_index}
+        for (const b of wrap.querySelectorAll(".cell-btn")) b.classList.remove("active")
+        btn.classList.add("active")
+        wrap.dispatchEvent(new Event("input"))
+      }
+      grid.append(btn)
     }
-
-    grid.append(btn)
+    row.append(label, grid)
+    wrap.append(row)
   }
 
-  wrap.append(html`<div class="matrix-caption">All 1100 cells (100 m(3π) bins × 11 t' bins). Color indicates t' slice; shade indicates total intensity.</div>`)
-
-  const legend = html`<div class="t-legend"></div>`
-  manifest.tprime_bins.forEach((tb, idx) => {
-    legend.append(html`<div class="t-legend-item"><span class="t-legend-chip" style="background:${tColors[idx]}"></span><span>t' ${idx + 1}: ${tb.low.toFixed(3)} - ${tb.high.toFixed(3)}</span></div>`)
-  })
-  wrap.append(legend)
+  wrap.append(html`<div class="mass-axis"><span>${manifest.m3pi[0].toFixed(2)}</span><span>m(3π) [GeV/c²]</span><span>${manifest.m3pi[manifest.n_m - 1].toFixed(2)}</span></div>`)
+  wrap.append(html`<div class="matrix-caption">Rows are t' bins; columns are m(3π) bins. Shade encodes total intensity. Click any cell to update the plots and local ranking.</div>`)
 
   return wrap
 }
+```
 
+```{=html}
+<p class="section-note">Explore the published resonance-fit amplitudes by mass, momentum transfer, and wave. The controls and plots below are the primary physics view; provenance and implementation details follow elsewhere on the site.</p>
+<div class="workspace-grid">
+<div class="panel control-stack">
+<div class="panel-kicker">1 · Choose a wave</div>
+<h3>Physics selection</h3>
+```
+
+```{ojs}
+viewof selectedWave = Inputs.select(rankedWaves, {
+  label: "Published fit wave — ranked by integrated intensity",
+  value: rankedWaves[0],
+  format: d => `${d.rank}. ${d.wave}`
+})
+```
+
+```{=html}
+<p class="panel-note">The HEPData resonance-fit export contains 14 selected waves, not the full PWA wave set. The selector is ordered by intensity integrated over all available mass and t' bins.</p>
+```
+
+```{ojs}
+html`<div>
+  <span class="meta-badge">${manifest.n_m} mass bins</span>
+  <span class="meta-badge">${manifest.n_t} t' bins</span>
+  <span class="meta-badge">${manifest.n_w} published fit waves</span>
+</div>`
+```
+
+```{ojs}
+html`<div>
+  <span class="meta-badge">m(3π) ${selectedCellSummary.m_center.toFixed(2)} GeV/c²</span>
+  <span class="meta-badge">t' ${selectedCellSummary.t_low.toFixed(3)}–${selectedCellSummary.t_high.toFixed(3)} (GeV/c)²</span>
+  <span class="meta-badge">dominant: ${selectedCellSummary.dominant_wave}</span>
+</div>`
+```
+
+```{=html}
+</div>
+<div class="panel">
+<div class="panel-kicker">2 · Choose a kinematic cell</div>
+<h3>Mass × momentum-transfer map</h3>
+```
+
+```{ojs}
 viewof selectedCell = matrixInput(cells)
+```
+
+```{=html}
+</div>
+</div>
+```
+
+```{ojs}
 selectedCellSummary = cells.find(d => d.m_index === selectedCell.m_index && d.t_index === selectedCell.t_index)
 
 activeT = selectedCell.t_index
 activeM = selectedCell.m_index
 
 waveSeries = amplitudes
-  .filter(d => d.wave === selectedWave && d.t_index === activeT)
+  .filter(d => d.wave === selectedWave.wave && d.t_index === activeT)
   .sort((a, b) => a.m_center - b.m_center)
   .map(d => ({
     ...d,
     i_lo: Math.max(0, d.intensity - (d.sigma_intensity ?? 0)),
     i_hi: d.intensity + (d.sigma_intensity ?? 0),
+    re_lo: d.re - (d.sigma_re ?? 0),
+    re_hi: d.re + (d.sigma_re ?? 0),
+    im_lo: d.im - (d.sigma_im ?? 0),
+    im_hi: d.im + (d.sigma_im ?? 0),
     is_selected_m: d.m_index === activeM
   }))
 
-selectedWavePoint = waveSeries.find(d => d.m_index === activeM)
-
-cellTrajectory = waveSeries
+argandExtent = 1.05 * Math.max(
+  ...waveSeries.flatMap(d => [
+    Math.abs(d.re_lo), Math.abs(d.re_hi),
+    Math.abs(d.im_lo), Math.abs(d.im_hi)
+  ]),
+  1e-12
+)
 
 cellWaveRows = amplitudes
   .filter(d => d.m_index === activeM && d.t_index === activeT)
@@ -278,57 +396,20 @@ topWaves = cellWaveRows.map((d, i) => ({
 ```
 
 ```{=html}
-<div class="dash-grid">
-<div class="panel">
-<h3>Cell Map</h3>
+<div class="plot-grid">
+<div class="panel plot-panel">
+<div class="panel-kicker">3 · Compare observables</div>
+<h3>Intensity vs m(3π)</h3>
 ```
-
-```{ojs}
-selectedCell
-```
-
-```{=html}
-</div>
-<div class="panel">
-<h3>Controls</h3>
-```
-
-```{ojs}
-selectedWave
-```
-
-```{ojs}
-html`<div>
-  <span class="meta-badge">m(3π) bins: ${manifest.n_m}</span>
-  <span class="meta-badge">t' bins: ${manifest.n_t}</span>
-  <span class="meta-badge">waves: ${manifest.n_w}</span>
-</div>`
-```
-
-```{ojs}
-html`<div>
-  <span class="meta-badge">Selected cell: m index ${activeM}, t index ${activeT}</span>
-  <span class="meta-badge">m(3π): ${selectedCellSummary.m_center.toFixed(2)} GeV</span>
-  <span class="meta-badge">t': ${selectedCellSummary.t_low.toFixed(3)} to ${selectedCellSummary.t_high.toFixed(3)} (GeV/c)^2</span>
-  <span class="meta-badge">Dominant wave: ${selectedCellSummary.dominant_wave}</span>
-</div>`
-```
-
-```{=html}
-</div>
-</div>
-```
-
-## Wave Intensity vs m(3π) (active t' from clicked cell)
 
 ```{ojs}
 Plot.plot({
-  marginLeft: 70,
-  marginBottom: 52,
-  width: 1100,
-  height: 430,
+  marginLeft: 64,
+  marginBottom: 50,
+  width: 560,
+  height: 410,
   x: {label: "m(3π) [GeV/c²]", grid: true},
-  y: {label: "|A|² (intensity)", grid: true},
+  y: {label: "|A|² (intensity)", grid: true, nice: true},
   marks: [
     Plot.link(waveSeries, {x1: "m_center", y1: "i_lo", x2: "m_center", y2: "i_hi", stroke: "#84c9c3", strokeWidth: 1.2}),
     Plot.line(waveSeries, {x: "m_center", y: "intensity", stroke: "#0b7a75", strokeWidth: 2.4}),
@@ -338,25 +419,41 @@ Plot.plot({
 })
 ```
 
-## RE/IM Trajectory for Selected Wave (active t')
+```{=html}
+</div>
+<div class="panel plot-panel argand-square">
+<div class="panel-kicker">Same wave · Same t' bin</div>
+<h3>RE/IM trajectory</h3>
+<p class="panel-note">Horizontal and vertical bars show the marginal 1σ uncertainties in RE(A) and IM(A).</p>
+```
 
 ```{ojs}
 Plot.plot({
-  marginLeft: 70,
-  marginBottom: 52,
-  width: 1100,
-  height: 430,
-  x: {label: "RE(A)", grid: true},
-  y: {label: "IM(A)", grid: true},
+  marginLeft: 64,
+  marginBottom: 50,
+  width: 520,
+  height: 520,
+  x: {label: "RE(A)", domain: [-argandExtent, argandExtent], grid: true},
+  y: {label: "IM(A)", domain: [-argandExtent, argandExtent], grid: true},
   marks: [
-    Plot.line(cellTrajectory, {x: "re", y: "im", stroke: "#1f4e79", strokeWidth: 2.2}),
-    Plot.dot(cellTrajectory, {x: "re", y: "im", r: 2.5, fill: "#1f4e79"}),
-    Plot.dot(cellTrajectory.filter(d => d.is_selected_m), {x: "re", y: "im", r: 6, fill: "#d62828", stroke: "white", strokeWidth: 1.5})
+    Plot.ruleX([0], {stroke: "#a9bdc6"}),
+    Plot.ruleY([0], {stroke: "#a9bdc6"}),
+    Plot.link(waveSeries, {x1: "re_lo", y1: "im", x2: "re_hi", y2: "im", stroke: "#84a8b8", strokeOpacity: 0.65, strokeWidth: 1}),
+    Plot.link(waveSeries, {x1: "re", y1: "im_lo", x2: "re", y2: "im_hi", stroke: "#84a8b8", strokeOpacity: 0.65, strokeWidth: 1}),
+    Plot.line(waveSeries, {x: "re", y: "im", stroke: "#1f4e79", strokeWidth: 2.2}),
+    Plot.dot(waveSeries, {x: "re", y: "im", r: 3, fill: "#1f4e79"}),
+    Plot.dot(waveSeries.filter(d => d.is_selected_m), {x: "re", y: "im", r: 6, fill: "#d62828", stroke: "white", strokeWidth: 1.5})
   ]
 })
 ```
 
-## Wave Ranking in Selected Cell
+```{=html}
+</div>
+</div>
+<div class="panel ranking-panel">
+<div class="panel-kicker">4 · Inspect the selected cell</div>
+<h3>Local wave ranking by intensity</h3>
+```
 
 ```{ojs}
 html`<table class="wave-table">
@@ -372,7 +469,7 @@ html`<table class="wave-table">
     </tr>
   </thead>
   <tbody>
-    ${topWaves.slice(0, 14).map(r => html`<tr>
+    ${topWaves.map(r => html`<tr>
       <td class="num-col">${r.rank}</td>
       <td class="wave-col">${r.wave}</td>
       <td class="num-col">${r.intensity.toFixed(3)}</td>
@@ -383,4 +480,8 @@ html`<table class="wave-table">
     </tr>`)}
   </tbody>
 </table>`
+```
+
+```{=html}
+</div>
 ```
